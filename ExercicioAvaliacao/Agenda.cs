@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,30 +16,17 @@ namespace ExercicioAvaliacao
         public Agenda()
         {
             InitializeComponent();
-
             mostrar();
-                      
             btnDeletar.Visible = false;
             btnAlterar.Visible = false;
-            
-
         }
         string continua = "yes";
-        
-
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnInserir_Click(object sender, EventArgs e)
         {
-
             verificaVazio();
             pegaData();
 
-
-            if (continua == "yes")
+            if (btnInserir.Text == "INSERIR" && continua == "yes")
             {
                 try
                 {
@@ -48,116 +35,40 @@ namespace ExercicioAvaliacao
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
                         MessageBox.Show("Inserido com sucesso!");
-                        string sql = "insert into agenda (titulo, hora, data,descricao) values ('"+ txtTitulo.Text + "','" + cmbHora.Text + "','" + Globals.DataNova + "','" + rtbDescricao.Text + "')";
+                        string sql = "insert into agenda (Titulo, Hora, Data, Descricao) values ('" + txtTitulo.Text + "', '" + cmbHora.Text + "', '" + Globals.DataNova + "', '" + rtbDescricao.Text + "')";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
-
-
-
                     }
                 }
                 catch (Exception ex)
                 {
-
                     MessageBox.Show(ex.ToString());
                 }
             }
-
-
+            txtPesquisar.Clear();
             mostrar();
             limpar();
-
-
-
-
-          
-
-
-
         }
 
-
-
-
-
-       
-
-
-        // 
-     
-
-        private void btnDeletar_Click(object sender, EventArgs e)
-        {
-            if (DialogResult.Yes == MessageBox.Show("Deseja realmente excluir", "Confirmação", MessageBoxButtons.YesNo))
-            {
-
-                try
-                {
-                    using (MySqlConnection cnn = new MySqlConnection())
-                    {
-                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                        cnn.Open();
-                        string sql = "Delete from agenda where idAgenda = '" + txtIdAgenda.Text + "'";
-                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
-                        cmd.ExecuteNonQuery();
-                        MessageBox.Show(" Deletado com sucesso! ");
-
-                    }
-                    limpar();
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-
-
-            }
-            mostrar();
-
-
-        }
-
-        private void btnAlterar_Click(object sender, EventArgs e)
+        private void dgwAgenda_CellContentDoubleClick_1(object sender, DataGridViewCellEventArgs e)
         {
             pegaData();
-            
-            try
+            if (dgwAgenda.CurrentRow.Index != -1)
             {
-                using (MySqlConnection cnn = new MySqlConnection())
-                {
-                    cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                    cnn.Open();
-                    string sql = "Update agenda set titulo='" + txtTitulo.Text + "', hora='" + cmbHora.Text + "',data='" + Globals.DataNova + "', descricao='" + rtbDescricao.Text + "' where idAgenda='" + txtIdAgenda.Text + "'";
-                    MySqlCommand cmd = new MySqlCommand(sql, cnn);
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Atualizado com sucesso!");
-                }
-
+                txtIdAgenda.Text = dgwAgenda.CurrentRow.Cells[0].Value.ToString();
+                txtTitulo.Text = dgwAgenda.CurrentRow.Cells[1].Value.ToString();
+                cmbHora.Text = dgwAgenda.CurrentRow.Cells[2].Value.ToString();
+                dtpData.Value = Convert.ToDateTime(dgwAgenda.CurrentRow.Cells[3].Value.ToString());
+                rtbDescricao.Text = dgwAgenda.CurrentRow.Cells[4].Value.ToString();
+                btnDeletar.Visible = true;
+                btnAlterar.Visible = true;
+                btnInserir.Text = "Novo";
+                txtPesquisar.Clear();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            mostrar();
-
         }
-
-        
-        void pegaData()
-        {
-            Globals.Data = dtpData.Value;
-            string dataCurta = Globals.Data.ToShortDateString();
-            string[] vetData = dataCurta.Split('/');
-           Globals.DataNova = vetData[2] + "-" + vetData[1] + "-" + vetData[0];
-
-        }
-
-        
 
         void mostrar()
         {
-            
             try
             {
                 using (MySqlConnection cnn = new MySqlConnection())
@@ -169,23 +80,30 @@ namespace ExercicioAvaliacao
                     MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
                     adpter.Fill(table);
                     dgwAgenda.DataSource = table;
-
                     dgwAgenda.AutoGenerateColumns = false;
-
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-
-
         }
 
+        void limpar()
+        {
+            txtIdAgenda.Text = "";
+            txtTitulo.Text = "";
+            cmbHora.ToString();
+            dtpData.Text = "";
+            rtbDescricao.Clear();
+            btnInserir.Text = "INSERIR";
+            btnDeletar.Visible = false;
+            btnAlterar.Visible = false;
+        }
 
         void verificaVazio()
         {
-            if (txtTitulo.Text == "" || rtbDescricao.Text == "")
+            if (txtTitulo.Text == "" || cmbHora.Text == "" || dtpData.Text == "")
             {
                 continua = "no";
                 MessageBox.Show("Preencha todos os campos");
@@ -194,41 +112,98 @@ namespace ExercicioAvaliacao
             {
                 continua = "yes";
             }
-
         }
 
-        void limpar()
+        void pegaData() 
         {
-            txtIdAgenda.Text = "";
-            txtTitulo.Clear();
-            rtbDescricao.Text = "";
-            btnInserir.Text = "INSERIR";
-            btnDeletar.Visible = false;
-            btnAlterar.Visible = false;
-
-
-
+            /*Ele vai criar uma variável data da classe dateTime que vai receber o valor do dtpData
+            e depois vai criar uma variável string dataCurta que vai receber a data abreviada, depois
+            ele vai criar um vetor de strings que irá ter uma variável vetData que vai receber dataCurta com
+            o split() parapegar a  "/" separando depois vai criar uma variável dataNova string que vai receber
+            vetData no vetor 2,1 e 0 com um "-" para separar*/
+            Globals.Data = dtpData.Value;
+            string dataCurta = Globals.Data.ToShortDateString();
+            string[] vetData = dataCurta.Split('/');
+            Globals.DataNova = vetData[2] + "-" + vetData[1] + "-" + vetData[0];
         }
 
-        private void dgwAgenda_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void btnDeletar_Click(object sender, EventArgs e)
         {
-            if (dgwAgenda.CurrentRow.Index != -1)
+            if (DialogResult.Yes == MessageBox.Show("Deseja realmente excluir", "Confirmação", MessageBoxButtons.YesNo))
             {
-                txtIdAgenda.Text = dgwAgenda.CurrentRow.Cells[0].Value.ToString();
-                txtTitulo.Text = dgwAgenda.CurrentRow.Cells[1].Value.ToString();
-                cmbHora.Text = dgwAgenda.CurrentRow.Cells[2].Value.ToString();
-                dtpData.Value = Convert.ToDateTime(dgwAgenda.CurrentRow.Cells[3].Value.ToString());
-               
-                rtbDescricao.Text = dgwAgenda.CurrentRow.Cells[4].Value.ToString();
+                try
+                {
+                    using (MySqlConnection cnn = new MySqlConnection())
+                    {
+                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
+                        cnn.Open();
+                        string sql = "Delete from agenda where idAgenda = '" + txtIdAgenda.Text + "'";
+                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show(" Deletado com sucesso! ");
+                    }
+                    limpar();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+            txtPesquisar.Clear();
+            mostrar();
+        }
 
-              
+        private void btnAlterar_Click(object sender, EventArgs e)
+        {
+            //pegaData();
 
+            if (DialogResult.Yes == MessageBox.Show("Deseja realmente alterar", "Confirmação", MessageBoxButtons.YesNo))
+            {
+                try
+                {
+                    using (MySqlConnection cnn = new MySqlConnection())
+                    {
+                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
+                        cnn.Open();
+                        string sql = "Update agenda set Titulo='" + txtTitulo.Text + "', Hora='" + cmbHora.Text + "', Data='" + Globals.DataNova + "', Descricao='" + rtbDescricao.Text + "' where idAgenda ='" + txtIdAgenda + "'";
+                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Atualizado com sucesso!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                txtPesquisar.Clear();
+                mostrar();
+                verificaVazio();
+            }
+        }
 
-                btnDeletar.Visible = true;
-                btnAlterar.Visible = true;
-                btnInserir.Text = "Novo";
+        private void txtPesquisar_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
 
-
+                using (MySqlConnection cnn = new MySqlConnection())
+                {
+                    cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
+                    cnn.Open();
+                    string sql;
+                    sql = "Select * from agenda where Titulo Like'" + txtPesquisar.Text + "%'";
+                    MySqlCommand cmd = new MySqlCommand(sql, cnn);
+                    cmd.ExecuteNonQuery();
+                    DataTable table = new DataTable();
+                    MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
+                    adpter.Fill(table);
+                    dgwAgenda.DataSource = table;
+                    dgwAgenda.AutoGenerateColumns = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }
