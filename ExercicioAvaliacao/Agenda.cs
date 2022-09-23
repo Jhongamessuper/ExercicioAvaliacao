@@ -165,7 +165,7 @@ namespace ExercicioAvaliacao
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Update agenda set Titulo='" + txtTitulo.Text + "', Hora='" + cmbHora.Text + "', Data='" + Globals.DataNova + "', Descricao='" + rtbDescricao.Text + "' where idAgenda ='" + txtIdAgenda + "'";
+                        string sql = "Update agenda set Titulo='" + txtTitulo.Text + "', Hora='" + cmbHora.Text + "', Data='" + Globals.DataNova + "', Descricao='" + rtbDescricao.Text + "' where idAgenda ='" + txtIdAgenda.Text + "'";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Atualizado com sucesso!");
