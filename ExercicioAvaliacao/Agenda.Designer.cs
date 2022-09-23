@@ -91,7 +91,6 @@
             this.dtpData.Size = new System.Drawing.Size(262, 20);
             this.dtpData.TabIndex = 4;
             this.dtpData.Value = new System.DateTime(2022, 9, 22, 0, 0, 0, 0);
-            this.dtpData.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
             // 
             // rtbDescricao
             // 
@@ -127,6 +126,7 @@
             this.txtPesquisar.Name = "txtPesquisar";
             this.txtPesquisar.Size = new System.Drawing.Size(245, 20);
             this.txtPesquisar.TabIndex = 14;
+            this.txtPesquisar.TextChanged += new System.EventHandler(this.txtPesquisar_TextChanged);
             // 
             // dgwAgenda
             // 
@@ -135,7 +135,7 @@
             this.dgwAgenda.Name = "dgwAgenda";
             this.dgwAgenda.Size = new System.Drawing.Size(690, 135);
             this.dgwAgenda.TabIndex = 13;
-            this.dgwAgenda.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwAgenda_CellDoubleClick);
+            this.dgwAgenda.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwAgenda_CellContentDoubleClick);
             // 
             // label11
             // 
