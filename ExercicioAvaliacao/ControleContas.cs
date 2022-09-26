@@ -16,7 +16,8 @@ namespace ExercicioAvaliacao
         public ControleContas()
         {
             InitializeComponent();
-            mostrar();
+            mostrarReceber();
+            mostrarPagar();
         }
 
         private void btnContasPagar_Click(object sender, EventArgs e)
