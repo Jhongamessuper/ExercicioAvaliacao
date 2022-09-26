@@ -92,6 +92,7 @@
             this.btnReceber.TabIndex = 4;
             this.btnReceber.Text = "receber";
             this.btnReceber.UseVisualStyleBackColor = true;
+            this.btnReceber.Click += new System.EventHandler(this.btnReceber_Click);
             // 
             // btnContasPagar
             // 

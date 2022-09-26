@@ -33,9 +33,9 @@ namespace ExercicioAvaliacao
                     using (MySqlConnection cnn = new MySqlConnection())
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                        cnn.Open();
+                         cnn.Open();
                         MessageBox.Show("Inserido com sucesso!");
-                        string sql = "insert into Contas (Nome, Descricao, Valor, Pago_Recebido, DataVencimento, DataConclusao, Tipo) values ('" + txtNome.Text + "', '" + txtDescricao.Text + "', '" + txtValor.Text + "', '" + cbRecebido.Text + "','" + Globals.DataNova + "','" + Globals.DataNova + "','" + cbRecebido.Text + "','" + 1 + "')";
+                        string sql = "insert into Contas (Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo) values ('" + txtNome.Text + "', '" + txtDescricao.Text + "', '" + txtValor.Text + "', '" + Globals.DataNova + "','" + cbRecebido.Text + "','" + "Conta para receber" + "')";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                     }
@@ -45,6 +45,7 @@ namespace ExercicioAvaliacao
                     MessageBox.Show(ex.ToString());
                 }
             }
+            cbRecebido.Checked = true;
             mostrar();
             limpar();
         }
@@ -58,8 +59,8 @@ namespace ExercicioAvaliacao
                 txtNome.Text = dgwContasReceber.CurrentRow.Cells[1].Value.ToString();
                 txtDescricao.Text = dgwContasReceber.CurrentRow.Cells[2].Value.ToString();
                 txtValor.Text = dgwContasReceber.CurrentRow.Cells[3].Value.ToString();
-                cbRecebido.Text = dgwContasReceber.CurrentRow.Cells[4].Value.ToString();
-                dtpDataVencimento.Value = Convert.ToDateTime(dgwContasReceber.CurrentRow.Cells[5].Value.ToString());
+                dtpDataVencimento.Value = Convert.ToDateTime(dgwContasReceber.CurrentRow.Cells[4].Value.ToString());
+                cbRecebido.Text = dgwContasReceber.CurrentRow.Cells[5].Value.ToString();
                 btnDeletar.Visible = true;
                 btnAlterar.Visible = true;
                 btnInserir.Text = "Novo";
@@ -74,7 +75,7 @@ namespace ExercicioAvaliacao
                 {
                     cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                     cnn.Open();
-                    string sql = "Select * from Contas";
+                    string sql = "Select idContas, Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo from Contas ";
                     DataTable table = new DataTable();
                     MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
                     adpter.Fill(table);
@@ -94,11 +95,12 @@ namespace ExercicioAvaliacao
             txtNome.Text = "";
             txtDescricao.Text = "";
             txtValor.Text = "";
-            cbRecebido.Text = "";
             dtpDataVencimento.Text = "";
+            cbRecebido.Text = "recebido";
             btnInserir.Text = "INSERIR";
             btnDeletar.Visible = false;
             btnAlterar.Visible = false;
+            cbRecebido.Checked = false;
         }
 
         void verificaVazio()
@@ -137,7 +139,7 @@ namespace ExercicioAvaliacao
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Delete from ContasReceber where idContasReceber = '" + txtIdContasReceber.Text + "'";
+                        string sql = "Delete from Contas where idContasPagar = '" + txtIdContasReceber.Text + "'";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show(" Deletado com sucesso! ");
@@ -162,7 +164,7 @@ namespace ExercicioAvaliacao
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Update ContasReceber set Nome='" + txtNome.Text + "', Descricao='" + txtDescricao.Text + "', Valor='" + txtValor.Text + "', Pago_Recebido='" + cbRecebido.Text + "', DataVencimento='" + Globals.DataNova + "' where idAgenda ='" + txtIdContasReceber.Text + "'";
+                        string sql = "Update Contas set Nome='" + txtNome.Text + "', Descricao='" + txtDescricao.Text + "', Valor='" + txtValor.Text + "', DataVencimento='" + Globals.DataNova + "', DataConsolidacao='" +Globals.DataNova + "', Pago_Recebido ='" + cbRecebido.Text + "', Tipo='" + 0 + "' where idContasPagar ='" + txtIdContasReceber.Text + "'";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Atualizado com sucesso!");
