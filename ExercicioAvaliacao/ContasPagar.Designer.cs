@@ -182,9 +182,9 @@
             this.cbPago.Enabled = false;
             this.cbPago.Location = new System.Drawing.Point(374, 154);
             this.cbPago.Name = "cbPago";
-            this.cbPago.Size = new System.Drawing.Size(50, 17);
+            this.cbPago.Size = new System.Drawing.Size(51, 17);
             this.cbPago.TabIndex = 26;
-            this.cbPago.Text = "pago";
+            this.cbPago.Text = "Pago";
             this.cbPago.UseVisualStyleBackColor = true;
             // 
             // label5

@@ -33,119 +33,117 @@ namespace ExercicioAvaliacao
             //contasreceber.MdiParent = this;
             contasreceber.Show();
         }
-
-        private void btnPesquisar_Click(object sender, EventArgs e)
-        {
-            {
-                try
-                {
-                    using (MySqlConnection cnn = new MySqlConnection())
-                    {
-                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                        cnn.Open();
-                        string sql = "Select idContas, Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo from Contas ";
-                        DataTable table = new DataTable();
-                        MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
-                        adpter.Fill(table);
-                        dgwContasPagar.DataSource = table;
-                        dgwContasPagar.AutoGenerateColumns = false;
-                        dgwContasReceber.DataSource = table;
-                        dgwContasReceber.AutoGenerateColumns = false;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
-        }
-
-        private void btnPagar_Click(object sender, EventArgs e)
-        {
-            {
-                try
-                {
-                    using (MySqlConnection cnn = new MySqlConnection())
-                    {
-                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                        cnn.Open();
-                        string sql = "Update Contas set Tipo='" + 1 + "'";
-                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
-                        cmd.ExecuteNonQuery();
-                        MessageBox.Show("Atualizado com sucesso!");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                mostrarPagar();
-            }
-        }
-
-        private void btnReceber_Click(object sender, EventArgs e)
+        void mostrarPagar()
         {
             try
             {
-                using (MySqlConnection cnn = new MySqlConnection())
+                using (MySqlConnection cnx = new MySqlConnection())
                 {
-                    cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                    cnn.Open();
-                    string sql = "update contas set pago_recebido = 1 where tipo = 'Conta_a_Receber'";
-                    MySqlCommand cmd = new MySqlCommand(sql, cnn);
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Atualizado com sucesso!");
+                    cnx.ConnectionString = "server = localhost; database = controle; uid = root; pwd =; port = 3306;Convert Zero DateTime = true";
+                    cnx.Open();
+                    string sql = "select * from contas where situacao = 'Pagar' and pago_recebido = 'N/E'";
+                    DataTable table = new DataTable();
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(sql, cnx);
+                    adapter.Fill(table);
+                    dgwContasPagar.DataSource = table;
+                    dgwContasPagar.AutoGenerateColumns = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.Message);
             }
-            mostrarReceber();
         }
-
         void mostrarReceber()
         {
             try
             {
-                using (MySqlConnection cnn = new MySqlConnection())
+                using (MySqlConnection cnx = new MySqlConnection())
                 {
-                    cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
-                    cnn.Open();
-                    string sql = "Select idContas, Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo from Contas where pago_recebido = 0 and tipo = 'Conta para receber'";
+                    cnx.ConnectionString = "server = localhost; database = controle; uid = root; pwd =; port = 3306;Convert Zero DateTime = true";
+                    cnx.Open();
+                    string sql = "select * from contas where Tipo = 'Receber' and pago_recebido = 'N/E'";
                     DataTable table = new DataTable();
-                    MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
-                    adpter.Fill(table);
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(sql, cnx);
+                    adapter.Fill(table);
                     dgwContasReceber.DataSource = table;
                     dgwContasReceber.AutoGenerateColumns = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show(ex.Message);
             }
+        }
+        private void dgwContasPagar_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgwContasPagar.CurrentRow.Index != -1)
+            {
+                txtIdContas.Text = dgwContasPagar.CurrentRow.Cells[0].Value.ToString();
+            }
+        }
 
-            void mostrarPagar()
+        private void dgwContasReceber_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgwContasReceber.CurrentRow.Index != -1)
+            {
+                txtIdContas.Text = dgwContasReceber.CurrentRow.Cells[0].Value.ToString();
+            }
+        }
+
+        private void btnPagar_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Deseja efetuar o pagamento?", "PAGAMENTO", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
                     using (MySqlConnection cnn = new MySqlConnection())
                     {
-                        cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
+
+                        cnn.ConnectionString = "server = localhost; database = controle; uid = root; pwd =; port = 3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Select idContas, Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo from Contas where pago_recebido = 0 and tipo = 'Conta para pagar'";
-                        DataTable table = new DataTable();
-                        MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
-                        adpter.Fill(table);
-                        dgwContasPagar.DataSource = table;
-                        dgwContasPagar.AutoGenerateColumns = false;
+                        string sql = "update contas set pago_recebido = 'Pago', dataConsolidacao = NOW()  where idContas = '" + txtIdContas.Text + "'";
+                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Pagamento efetuado com sucesso!");
+
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    MessageBox.Show(ex.Message);
                 }
             }
+            mostrarPagar();
+
+            //ContasPagar cP = new ContasPagar();
+            //cP.Show();    
+        }
+
+        private void btnReceber_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Confirmar o recebimento?", "RECEBIMENTO", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                try
+                {
+                    using (MySqlConnection cnn = new MySqlConnection())
+                    {
+
+
+                        cnn.ConnectionString = "server = localhost; database = controle; uid = root; pwd =; port = 3306;Convert Zero DateTime = true";
+                        cnn.Open();
+                        string sql = "update contas set pago_recebido = 'Recebido',dataConclusao = NOW() where idContas = '" + txtIdContas.Text + "'";
+                        MySqlCommand cmd = new MySqlCommand(sql, cnn);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Dinheiro recebido com sucesso!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            mostrarReceber();
         }
     }
 }

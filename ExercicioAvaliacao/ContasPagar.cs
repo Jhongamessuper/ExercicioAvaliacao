@@ -35,7 +35,7 @@ namespace ExercicioAvaliacao
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
                         MessageBox.Show("Inserido com sucesso!");
-                        string sql = "insert into Contas (Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo) values ('" + txtNome.Text + "', '" + txtDescricao.Text + "', '" + txtValor.Text + "', '" + Globals.DataNova + "','" + cbPago.Text + "','" + "Conta para pagar" + "')";
+                        string sql = "insert into Contas (Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo) values ('" + txtNome.Text + "', '" + txtDescricao.Text + "', '" + txtValor.Text + "', '" + Globals.DataNova + "','" + "N/E" + "','" + "Pagar" + "')";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                     }
@@ -45,7 +45,6 @@ namespace ExercicioAvaliacao
                     MessageBox.Show(ex.ToString());
                 }
             }
-            cbPago.Checked = true;
             mostrar();
             limpar();
         }
@@ -61,6 +60,17 @@ namespace ExercicioAvaliacao
                 txtValor.Text = dgwContasPagar.CurrentRow.Cells[3].Value.ToString();
                 dtpDataVencimento.Value = Convert.ToDateTime(dgwContasPagar.CurrentRow.Cells[4].Value.ToString());
                 cbPago.Text = dgwContasPagar.CurrentRow.Cells[5].Value.ToString();
+                string recebido = cbPago.Text;
+                if (recebido == "Pago")
+                {
+                    cbPago.Text = "Pago";
+                    cbPago.Checked = true;
+                }
+                else if (recebido == "N/E")
+                {
+                    cbPago.Text = "Pago";
+                    cbPago.Checked = false;
+                }
                 btnDeletar.Visible = true;
                 btnAlterar.Visible = true;
                 btnInserir.Text = "Novo";
@@ -74,7 +84,7 @@ namespace ExercicioAvaliacao
                 {
                     cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                     cnn.Open();
-                    string sql = "Select idContas, Nome, Descricao, Valor, DataVencimento, Pago_Recebido, Tipo from Contas ";
+                    string sql = "Select * from Contas where Tipo = 'Pagar'";
                     DataTable table = new DataTable();
                     MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
                     adpter.Fill(table);
@@ -95,11 +105,10 @@ namespace ExercicioAvaliacao
             txtDescricao.Text = "";
             txtValor.Text = "";
             dtpDataVencimento.Text = "";
-            cbPago.Text = "pago";
+            cbPago.Text = "Pago";
             btnInserir.Text = "INSERIR";
             btnDeletar.Visible = false;
             btnAlterar.Visible = false;
-            cbPago.Checked = false;
         }
 
         void verificaVazio()
@@ -138,7 +147,7 @@ namespace ExercicioAvaliacao
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Delete from Contas where idContasPagar = '" + txtIdContasPagar.Text + "'";
+                        string sql = "Delete from Contas where idContas = '" + txtIdContasPagar.Text + "'";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show(" Deletado com sucesso! ");
@@ -163,7 +172,7 @@ namespace ExercicioAvaliacao
                     {
                         cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                         cnn.Open();
-                        string sql = "Update Contas set Nome='" + txtNome.Text + "', Descricao='" + txtDescricao.Text + "', Valor='" + txtValor.Text + "', DataVencimento='" + Globals.DataNova + "', DataConsolidacao='" + Globals.DataNova + "', Pago_Recebido ='" + cbPago.Text + "', Tipo='" + "Conta para pagar" + "' where idContasPagar ='" + txtIdContasPagar.Text + "'";
+                        string sql = "Update Contas set Nome='" + txtNome.Text + "', Descricao='" + txtDescricao.Text + "', Valor='" + txtValor.Text + "', DataVencimento='" + Globals.DataNova + "' where IdContas ='" + txtIdContasPagar.Text + "'";
                         MySqlCommand cmd = new MySqlCommand(sql, cnn);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Atualizado com sucesso!");
@@ -175,6 +184,8 @@ namespace ExercicioAvaliacao
                 }
                 mostrar();
                 verificaVazio();
+                pegaData();
+                limpar();
             }
         }
 
@@ -186,10 +197,7 @@ namespace ExercicioAvaliacao
                 {
                     cnn.ConnectionString = "server=localhost;database=controle;uid=root;pwd=;port=3306;Convert Zero DateTime = true";
                     cnn.Open();
-                    string sql;
-                    sql = "Select * from Contas'" + btnPesquisar.Text + "%'";
-                    MySqlCommand cmd = new MySqlCommand(sql, cnn);
-                    cmd.ExecuteNonQuery();
+                    string sql = "Select * from Contas where Tipo = 'Pagar'";
                     DataTable table = new DataTable();
                     MySqlDataAdapter adpter = new MySqlDataAdapter(sql, cnn);
                     adpter.Fill(table);

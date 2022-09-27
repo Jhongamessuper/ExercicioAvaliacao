@@ -183,9 +183,9 @@
             this.cbRecebido.Enabled = false;
             this.cbRecebido.Location = new System.Drawing.Point(370, 157);
             this.cbRecebido.Name = "cbRecebido";
-            this.cbRecebido.Size = new System.Drawing.Size(67, 17);
+            this.cbRecebido.Size = new System.Drawing.Size(72, 17);
             this.cbRecebido.TabIndex = 35;
-            this.cbRecebido.Text = "recebido";
+            this.cbRecebido.Text = "Recebido";
             this.cbRecebido.UseVisualStyleBackColor = true;
             // 
             // txtNome

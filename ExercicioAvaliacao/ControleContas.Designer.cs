@@ -48,6 +48,7 @@
             this.dgwContasPagar.Name = "dgwContasPagar";
             this.dgwContasPagar.Size = new System.Drawing.Size(500, 140);
             this.dgwContasPagar.TabIndex = 0;
+            this.dgwContasPagar.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwContasPagar_CellContentDoubleClick);
             // 
             // dgwContasReceber
             // 
@@ -56,6 +57,7 @@
             this.dgwContasReceber.Name = "dgwContasReceber";
             this.dgwContasReceber.Size = new System.Drawing.Size(500, 140);
             this.dgwContasReceber.TabIndex = 1;
+            this.dgwContasReceber.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwContasReceber_CellContentDoubleClick);
             // 
             // label1
             // 
@@ -83,6 +85,7 @@
             this.btnPagar.TabIndex = 4;
             this.btnPagar.Text = "pagar";
             this.btnPagar.UseVisualStyleBackColor = true;
+            this.btnPagar.Click += new System.EventHandler(this.btnPagar_Click);
             // 
             // btnReceber
             // 
